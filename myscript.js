@@ -195,14 +195,29 @@ function loadImages(access, isPost){
 				let img = new Image();
 				let card = document.createElement('div');
 				card.className = "card";
-				if (isPost) {
-					card.setAttribute("onclick", "displayLightBox('alt', '" + data[i].uid + "." + data[i].imagetype + "')");	
-				}
 				console.log(data[i].uid + "." + data[i].imagetype);
 				img.src = thumbFolder + data[i].uid + "." + data[i].imagetype;
 				img.alt = data[i].desc;
 				img.className = "thumb";
 				main.appendChild(card).appendChild(img);
+				if (isPost) {
+					card.setAttribute("onclick", "displayLightBox('alt', '" + data[i].uid + "." + data[i].imagetype + "')");	
+		
+					let likeform = document.createElement('form');
+					likeform.method = "post";
+					//likeform.setAttribute("onsubmit", "loadImages('allpfs', false)"); // doesnt workkk
+					let like = document.createElement('input');
+					like.type = "image";
+					like.src = "images/like.png";
+					like.alt = "like button";
+					like.className = "like";
+					let postToLike = document.createElement('input');
+					postToLike.type = "hidden";
+					postToLike.name = "postToLike";
+					postToLike.value = data[i].uid;
+					card.appendChild(likeform).appendChild(like);
+					likeform.appendChild(postToLike);
+				}
 				if (!isPost) {
 					let followform = document.createElement('form');
 					followform.method = "post";
