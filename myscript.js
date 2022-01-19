@@ -1,6 +1,8 @@
 //Variables
-let previewImg = document.getElementById("imgSrc");//image preview obj
-let size = 0; //stores size of preview
+let size = 0; // size of preview
+let previewImg = document.getElementById("imgSrc"); // image preview obj
+let jsondata = []; // array of profiles currently being displayed on the screen
+let currentUid = 0; // uid of profile currently displayed in lightbox
 
 function showGradeMenu() {
 	let x = document.getElementById("gradeMenu");
@@ -23,31 +25,6 @@ function showAgreement() {
 	let x = document.getElementById("agreementDiv");
 	x.style.display = "block";
 	document.getElementById("agreement").checked = false;
-}
-
-//onload of image preview crop and resize it
-previewImg.onload = function () {
-	console.log(size);
-	//Getting the area of the crop
-	let width = previewImg.width;
-	let height = previewImg.height;
-	let ratio = (previewImg.width / previewImg.height);
-	let startX = 0;
-	let startY = 0;
-	
-	if (ratio >= 1) {
-		let thumbRatio = previewImg.height / size;
-		startX = (previewImg.width - (thumbRatio * size)) / 2;
-		width = (thumbRatio * size);
-		console.log("x" + startX);
-	}else {
-		let thumbRatio = previewImg.width / size;
-		startY = (previewImg.height - (thumbRatio * size)) / 2;
-		height = (thumbRatio * size);
-		console.log("y" + startY);
-	}
-	document.getElementById("preview").getContext("2d").drawImage(previewImg, startX, startY, width, height, 10, 10, size, size);
-	console.log(previewImg + " " + startX + " " + startY + " " + width + " " + height  + " " + size);
 }
 
 window.onload = function() {
@@ -88,9 +65,6 @@ function changeVisibility(divID) {
   }
 } // changeVisibility
 
-// global variables
-var jsondata; // array of profiles currently being displayed on the screen
-let currentUid; // uid of profile currently displayed in lightbox
 
 // display lightbox with big image in it
 function displayLightBox(alt, imageFile) {
@@ -386,4 +360,29 @@ function searchProfiles(term) {
       
     });
 
+}
+
+//onload of image preview crop and resize it
+previewImg.onload = function () {
+	console.log(size);
+	//Getting the area of the crop
+	let width = previewImg.width;
+	let height = previewImg.height;
+	let ratio = (previewImg.width / previewImg.height);
+	let startX = 0;
+	let startY = 0;
+	
+	if (ratio >= 1) {
+		let thumbRatio = previewImg.height / size;
+		startX = (previewImg.width - (thumbRatio * size)) / 2;
+		width = (thumbRatio * size);
+		console.log("x" + startX);
+	}else {
+		let thumbRatio = previewImg.width / size;
+		startY = (previewImg.height - (thumbRatio * size)) / 2;
+		height = (thumbRatio * size);
+		console.log("y" + startY);
+	}
+	document.getElementById("preview").getContext("2d").drawImage(previewImg, startX, startY, width, height, 10, 10, size, size);
+	console.log(previewImg + " " + startX + " " + startY + " " + width + " " + height  + " " + size);
 }

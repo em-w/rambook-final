@@ -28,25 +28,6 @@ const IMAGE_HANDLERS = [
  */
 function createThumbnail($src, $dest, $targetWidth, $targetHeight = null) {
 
-	$typeAndThumbnail = precreate($src, $targetWidth, $targetHeight = null);
-	$type = $typeAndThumbnail[0];
-	$thumbnail = $typeAndThumbnail[1];
-
-    // 3. Save the $thumbnail to disk
-    // - call the correct save method
-    // - set the correct quality level
-
-    // save the duplicate version of the image to disk
-    return call_user_func(
-        IMAGE_HANDLERS[$type]['save'],
-        $thumbnail,
-        $dest,
-        IMAGE_HANDLERS[$type]['quality']
-    );
-}
-
-function precreate ($src, $targetWidth, $targetHeight = null) {
-	
     // 1. Load the image from the given $src
     // - see if the file actually exists
     // - check if it's of a valid image type
@@ -152,15 +133,25 @@ function precreate ($src, $targetWidth, $targetHeight = null) {
 
     // copy entire source image to duplicate image and resize
 
-	imagecopyresampled(
+imagecopyresampled(
         $thumbnail,
         $image,
         0, 0, $startX, $startY,
         $targetWidth, $targetHeight,
         $src_w, $src_h
     );
-	
-	return [$type, $thumbnail];
-	
+
+
+    // 3. Save the $thumbnail to disk
+    // - call the correct save method
+    // - set the correct quality level
+
+    // save the duplicate version of the image to disk
+    return call_user_func(
+        IMAGE_HANDLERS[$type]['save'],
+        $thumbnail,
+        $dest,
+        IMAGE_HANDLERS[$type]['quality']
+    );
 }
 ?>
