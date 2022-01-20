@@ -47,9 +47,18 @@ function hash() {
 //num is the width and height of the preview
 function setSrc (num) {
 	const imgFile = document.getElementById("image").files;
+	console.log(imgFile);
+	const tError = document.getElementById("imgTypeErr");
 	if (imgFile) {
-		size = num;
-		previewImg.src = (URL.createObjectURL(imgFile[0]));
+		console.log(imgFile[0].type);
+		if (imgFile[0].type == "image/png" || imgFile[0].type == "image/jpeg") {
+			tError.style.display = "none";
+			size = num;
+			previewImg.src = (URL.createObjectURL(imgFile[0]));
+		}else {
+			tError.style.display = "block";
+			document.getElementById("agreementDiv").style.display = "none";
+		}
 	}
 }
 
@@ -141,119 +150,122 @@ function sortByUID() {
 
 // load all posts or users's posts only
 function loadImages(access, isPost){
-	console.log(isPost);
-	console.log(access);
-	if (isPost) {
-		thumbFolder = "thumbnails/";
-		
-	} else {
-		thumbFolder = "pfpthumbs/";
-	}
-	fetch("./readjson.php?access=" + access).
-    then(function(resp){ 
-      return resp.json();
-    })
-    .then(function(data){
-		console.log(data); 
-		let followingArray = [];
-
-		// everything beyond this point can be turned into a method probably
-		   let i;  // counter     
-		let j; // other counter
-		let main = document.getElementById("main");
-		// remove all existing children of main
-		while (main.firstChild) {
-		main.removeChild(main.firstChild);
+	let main = document.getElementById("main");
+	//if main div exists continue
+	if (main) {
+		console.log(isPost);
+		console.log(access);
+		if (isPost) {
+			thumbFolder = "thumbnails/";
+			
+		} else {
+			thumbFolder = "pfpthumbs/";
 		}
+		fetch("./readjson.php?access=" + access).
+		then(function(resp){ 
+		  return resp.json();
+		})
+		.then(function(data){
+			console.log(data); 
+			let followingArray = [];
 
-		// sort contents of data by uid
-		if (data != null) {
-		data.sort(sortByUID());
-
-
-
-			//get following list
-			if (!isPost) {
-				for (j in data) { // fix me :(
-				console.log(data[j].current);
-					if (data[j].current) {
-						followingArray = data[j].following;
-						console.log(followingArray); // come back
-						data.splice(j, 1);
-
-						break;
-					}				
-				}
+			// everything beyond this point can be turned into a method probably
+			   let i;  // counter     
+			let j; // other counter
+			// remove all existing children of main
+			while (main.firstChild) {
+			main.removeChild(main.firstChild);
 			}
-			console.log(followingArray); // come back
 
-			// save data into global array
-			jsondata = data;
+			// sort contents of data by uid
+			if (data != null) {
+			data.sort(sortByUID());
 
-			// for every image, create a new image object and add to main
-			for (i in data){
-				let img = new Image();
-				let card = document.createElement('div');
-				card.className = "card";
-				console.log(data[i].uid + "." + data[i].imagetype);
-				img.src = thumbFolder + data[i].uid + "." + data[i].imagetype;
-				img.alt = data[i].desc;
-				img.className = "thumb";
-				main.appendChild(card).appendChild(img);
-				if (isPost) {
-					card.setAttribute("onclick", "displayLightBox('alt', '" + data[i].uid + "." + data[i].imagetype + "')");	
-		
-					let likeform = document.createElement('form');
-					likeform.method = "post";
-					//likeform.setAttribute("onsubmit", "loadImages('allpfs', false)"); // doesnt workkk
-					let like = document.createElement('input');
-					like.type = "image";
-					like.src = "images/like.png";
-					like.alt = "like button";
-					like.className = "like";
-					let postToLike = document.createElement('input');
-					postToLike.type = "hidden";
-					postToLike.name = "postToLike";
-					postToLike.value = data[i].uid;
-					card.appendChild(likeform).appendChild(like);
-					likeform.appendChild(postToLike);
-				}
+
+
+				//get following list
 				if (!isPost) {
-					let followform = document.createElement('form');
-					followform.method = "post";
-					followform.setAttribute("onsubmit", "loadImages('allpfs', false)");
-					let follow = document.createElement('input');
-					follow.type = "image";
-					follow.className = "follow";
-					let userToFollow = document.createElement('input');
-					userToFollow.type = "hidden";
-					userToFollow.value = data[i].uid;
-					card.appendChild(followform).appendChild(follow);
-					followform.appendChild(userToFollow);
-					console.log(followingArray); // come back
-					if (followingArray.includes(data[i].uid)) {
-						follow.src = "images/unfollow.png";
-						follow.alt = "unfollow button";
-						userToFollow.name = "userToUnfollow";
+					for (j in data) { // fix me :(
+					console.log(data[j].current);
+						if (data[j].current) {
+							followingArray = data[j].following;
+							console.log(followingArray); // come back
+							data.splice(j, 1);
 
+							break;
+						}				
 					}
-					else {
-						follow.src = "images/follow.png";
-						follow.alt = "follow button";
-						userToFollow.name = "userToFollow";
+				}
+				console.log(followingArray); // come back
 
+				// save data into global array
+				jsondata = data;
+
+				// for every image, create a new image object and add to main
+				for (i in data){
+					let img = new Image();
+					let card = document.createElement('div');
+					card.className = "card";
+					console.log(data[i].uid + "." + data[i].imagetype);
+					img.src = thumbFolder + data[i].uid + "." + data[i].imagetype;
+					img.alt = data[i].desc;
+					img.className = "thumb";
+					main.appendChild(card).appendChild(img);
+					if (isPost) {
+						card.setAttribute("onclick", "displayLightBox('alt', '" + data[i].uid + "." + data[i].imagetype + "')");	
+			
+						let likeform = document.createElement('form');
+						likeform.method = "post";
+						//likeform.setAttribute("onsubmit", "loadImages('allpfs', false)"); // doesnt workkk
+						let like = document.createElement('input');
+						like.type = "image";
+						like.src = "images/like.png";
+						like.alt = "like button";
+						like.className = "like";
+						let postToLike = document.createElement('input');
+						postToLike.type = "hidden";
+						postToLike.name = "postToLike";
+						postToLike.value = data[i].uid;
+						card.appendChild(likeform).appendChild(like);
+						likeform.appendChild(postToLike);
 					}
-					
-					let username = document.createElement('a');
-					let usernameText = document.createTextNode(data[i].username);
-					username.href = "javascript:loadImages(" + data[i].uid + ", true);";
-					username.appendChild(usernameText);
-					
-					card.appendChild(username);
-				}//if(!isPost)
-			}//for
-		}//if(data!=null)
-	});//fetch then
+					if (!isPost) {
+						let followform = document.createElement('form');
+						followform.method = "post";
+						followform.setAttribute("onsubmit", "loadImages('allpfs', false)");
+						let follow = document.createElement('input');
+						follow.type = "image";
+						follow.className = "follow";
+						let userToFollow = document.createElement('input');
+						userToFollow.type = "hidden";
+						userToFollow.value = data[i].uid;
+						card.appendChild(followform).appendChild(follow);
+						followform.appendChild(userToFollow);
+						console.log(followingArray); // come back
+						if (followingArray.includes(data[i].uid)) {
+							follow.src = "images/unfollow.png";
+							follow.alt = "unfollow button";
+							userToFollow.name = "userToUnfollow";
+
+						}
+						else {
+							follow.src = "images/follow.png";
+							follow.alt = "follow button";
+							userToFollow.name = "userToFollow";
+
+						}
+						
+						let username = document.createElement('a');
+						let usernameText = document.createTextNode(data[i].username);
+						username.href = "javascript:loadImages(" + data[i].uid + ", true);";
+						username.appendChild(usernameText);
+						
+						card.appendChild(username);
+					}//if(!isPost)
+				}//for
+			}//if(data!=null)
+		});//fetch then
+	}//if main
 } // loadImages
 
 // return the provided session variable FIX ME
@@ -378,26 +390,25 @@ function searchProfiles(term) {
 }
 
 //onload of image preview crop and resize it
-previewImg.onload = function () {
-	console.log(size);
-	//Getting the area of the crop
-	let width = previewImg.width;
-	let height = previewImg.height;
-	let ratio = (previewImg.width / previewImg.height);
-	let startX = 0;
-	let startY = 0;
-	
-	if (ratio >= 1) {
-		let thumbRatio = previewImg.height / size;
-		startX = (previewImg.width - (thumbRatio * size)) / 2;
-		width = (thumbRatio * size);
-		console.log("x" + startX);
-	}else {
-		let thumbRatio = previewImg.width / size;
-		startY = (previewImg.height - (thumbRatio * size)) / 2;
-		height = (thumbRatio * size);
-		console.log("y" + startY);
+//This isn't optimized as the code still runs with the hidden horse img
+if (previewImg) {
+		previewImg.onload = function () {
+		//Getting the area of the crop
+		let width = previewImg.width;
+		let height = previewImg.height;
+		let ratio = (previewImg.width / previewImg.height);
+		let startX = 0;
+		let startY = 0;
+		
+		if (ratio >= 1) {
+			let thumbRatio = previewImg.height / size;
+			startX = (previewImg.width - (thumbRatio * size)) / 2;
+			width = (thumbRatio * size);
+		}else {
+			let thumbRatio = previewImg.width / size;
+			startY = (previewImg.height - (thumbRatio * size)) / 2;
+			height = (thumbRatio * size);
+		}
+		document.getElementById("preview").getContext("2d").drawImage(previewImg, startX, startY, width, height, 10, 10, size, size);
 	}
-	document.getElementById("preview").getContext("2d").drawImage(previewImg, startX, startY, width, height, 10, 10, size, size);
-	console.log(previewImg + " " + startX + " " + startY + " " + width + " " + height  + " " + size);
 }
