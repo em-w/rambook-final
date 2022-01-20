@@ -473,15 +473,17 @@ $credentials = [
 				$jsonstring = file_get_contents("$x.json");
 				$userposts = json_decode($jsonstring, true);
 			} // if
-
-			for($x = 0; $x < sizeof($userposts); $x ++){
+			if ($userposts != null) {
+				for($y = 0; $y < sizeof($userposts); $y ++){
 			
-				if($userposts[$x]["uid"] == $targetPost){
-					if(!in_array($_SESSION["userUid"], $userposts[$x]["likedBy"])){
-						$userposts[$x]["likedBy"][] = $_SESSION["userUid"];
+					if($userposts[$y]["uid"] == $targetPost){
+						if(!in_array($_SESSION["userUid"], $userposts[$y]["likedBy"])){
+							$userposts[$y]["likedBy"][] = $_SESSION["userUid"];
+						} // if
 					} // if
-				} // if
-			} // for loop
+				} // for loop
+			} // if
+			
 			 
 			//encode user's post json
 			$jsoncode = json_encode($userposts, JSON_PRETTY_PRINT);

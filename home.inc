@@ -1,11 +1,10 @@
 <div id="viewmenu">
-	<div onclick="loadImages('all', true)" class="viewbutton">show all posts</div>
-	<div onclick="loadImages('following', true)" class="viewbutton">my feed</div>
-	<div onclick="loadImages('self', true)" class="viewbutton">my posts</div>
-	<div onclick="loadImages('allpfs', false)" class="viewbutton">show all profiles</div>
-    <!-- <div onclick="loadImages('student')" class="viewbutton">show student profiles only</div> -->
-    <!-- <div onclick="loadImages('alumnus')" class="viewbutton">show alumnus profiles only</div> -->
-	<!-- <div onclick="loadImages('staff')" class="viewbutton">show staff profiles only</div> -->
+	<div onclick="hideProfileBar(); loadImages('all', true);" class="viewbutton">show all posts</div>
+	<div onclick="hideProfileBar(); loadImages('following', true);" class="viewbutton">my feed</div>
+	<div onclick="showProfileInfo(<?php echo $_SESSION["userUid"]?>); loadImages('self', true)" class="viewbutton">my posts</div>
+	<div onclick="hideProfileBar(); loadImages('liked', true);" class="viewbutton">liked posts</div>
+	<div onclick="hideProfileBar(); loadImages('allpfs', false);" class="viewbutton">show all profiles</div>
+	
 </div>
 
 <form id="searchbar">
@@ -13,17 +12,38 @@
 	<input type=submit value="Search" class="button">
 </form>
 
+<div id="profileInfoBar">
+	<h3 id="pUsername"></h3>
+	<div>
+		<img id="pImg" src="images/arabian.jpg" alt="placeholder">
+	</div>
+	<div>
+		<p><strong>Name:</strong><p>
+		<p id="pName"></p>
+	</div>
+		
+	<div>
+		<p><strong>About me:</strong><p>
+		<p id="pDesc"></p>
+		
+	</div>
+	
+	<div>
+		<p><strong>Connection to Mount Doug:</strong><p>
+		<p id="pConnection"></p>
+	</div>
+	<br>
+	
+</div>
+
+<div>
+	<p><strong id="message"></strong><p>
+</div>
 
 <?php
 	$file = "userprofiles.json";
 	$dir = "profileimages/";
 	$thumbdir = "thumbnails/";
-	
-	echo "<div id='message'>";
-	if (!file_exists($file)){
-		echo "nothing to see here...yet....";
-	}
-	echo "</div>";
 	
 	echo "<div id='main'>";
 	if (is_dir($thumbdir)) {

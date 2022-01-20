@@ -115,6 +115,10 @@ img {
 	display: none;
 }
 
+#profileInfoBar {
+	display: none;
+}
+
 /*LIGHTBOX STUFF*/
 
 .card {
