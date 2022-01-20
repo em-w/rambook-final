@@ -191,6 +191,10 @@ function sortByUID() {
 
 // load all posts or users's posts only
 function loadImages(access, isPost){
+	let main = document.getElementById("main")
+	
+	if (main) {
+	
 	console.log(isPost);
 	console.log(access);
 	
@@ -282,14 +286,15 @@ function loadImages(access, isPost){
 					like.type = "image";
 					let postToLike = document.createElement('input');
 
-					if (data[i].liked) {
-						like.src = "images/like.png";
-						like.alt = "like button";
-						postToLike.name = "postToLike";
-					} else {
+					if (data[i].liked == true) {
 						like.src = "images/liked.png";
 						like.alt = "liked button";
 						postToLike.name = "postToUnlike";
+					} else {
+						like.src = "images/like.png";
+						like.alt = "like button";
+						postToLike.name = "postToLike";
+						
 					}
 					
 					like.className = "like";
@@ -334,6 +339,7 @@ function loadImages(access, isPost){
 			}//for
 		}// if data != null
 	});//fetch then
+	} // if main exists
 } // loadImages
 
 // return the provided session variable FIX ME
