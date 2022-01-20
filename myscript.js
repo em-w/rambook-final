@@ -51,9 +51,18 @@ function hash() {
 //num is the width and height of the preview
 function setSrc (num) {
 	const imgFile = document.getElementById("image").files;
+	console.log(imgFile);
+	const tError = document.getElementById("imgTypeErr");
 	if (imgFile) {
-		size = num;
-		previewImg.src = (URL.createObjectURL(imgFile[0]));
+		console.log(imgFile[0].type);
+		if (imgFile[0].type == "image/png" || imgFile[0].type == "image/jpeg") {
+			tError.style.display = "none";
+			size = num;
+			previewImg.src = (URL.createObjectURL(imgFile[0]));
+		}else {
+			tError.style.display = "block";
+			document.getElementById("agreementDiv").style.display = "none";
+		}
 	}
 }
 
@@ -303,8 +312,7 @@ function loadImages(access, isPost){
 					postToLike.value = data[i].uid;
 					card.appendChild(likeform).appendChild(like);
 					likeform.appendChild(postToLike);
-				}
-				if (!isPost) {
+				} else {
 					let followform = document.createElement('form');
 					followform.method = "post";
 					followform.setAttribute("onsubmit", "loadImages('allpfs', false)");
@@ -464,26 +472,25 @@ function searchProfiles(term) {
 }
 
 //onload of image preview crop and resize it
-previewImg.onload = function () {
-	console.log(size);
-	//Getting the area of the crop
-	let width = previewImg.width;
-	let height = previewImg.height;
-	let ratio = (previewImg.width / previewImg.height);
-	let startX = 0;
-	let startY = 0;
-	
-	if (ratio >= 1) {
-		let thumbRatio = previewImg.height / size;
-		startX = (previewImg.width - (thumbRatio * size)) / 2;
-		width = (thumbRatio * size);
-		console.log("x" + startX);
-	}else {
-		let thumbRatio = previewImg.width / size;
-		startY = (previewImg.height - (thumbRatio * size)) / 2;
-		height = (thumbRatio * size);
-		console.log("y" + startY);
+//This isn't optimized as the code still runs with the hidden horse img
+if (previewImg) {
+		previewImg.onload = function () {
+		//Getting the area of the crop
+		let width = previewImg.width;
+		let height = previewImg.height;
+		let ratio = (previewImg.width / previewImg.height);
+		let startX = 0;
+		let startY = 0;
+		
+		if (ratio >= 1) {
+			let thumbRatio = previewImg.height / size;
+			startX = (previewImg.width - (thumbRatio * size)) / 2;
+			width = (thumbRatio * size);
+		}else {
+			let thumbRatio = previewImg.width / size;
+			startY = (previewImg.height - (thumbRatio * size)) / 2;
+			height = (thumbRatio * size);
+		}
+		document.getElementById("preview").getContext("2d").drawImage(previewImg, startX, startY, width, height, 10, 10, size, size);
 	}
-	document.getElementById("preview").getContext("2d").drawImage(previewImg, startX, startY, width, height, 10, 10, size, size);
-	console.log(previewImg + " " + startX + " " + startY + " " + width + " " + height  + " " + size);
 }
