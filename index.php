@@ -473,17 +473,66 @@ $credentials = [
 				$jsonstring = file_get_contents("$x.json");
 				$userposts = json_decode($jsonstring, true);
 			} // if
-			if ($userposts != null) {
-				for($y = 0; $y < sizeof($userposts); $y ++){
+
+			for($x = 0; $x < sizeof($userposts); $x ++){
 			
-					if($userposts[$y]["uid"] == $targetPost){
-						if(!in_array($_SESSION["userUid"], $userposts[$y]["likedBy"])){
-							$userposts[$y]["likedBy"][] = $_SESSION["userUid"];
-						} // if
+				if($userposts[$x]["uid"] == $targetPost){
+					if(!in_array($_SESSION["userUid"], $userposts[$x]["likedBy"])){
+						$userposts[$x]["likedBy"][] = $_SESSION["userUid"];
 					} // if
-				} // for loop
-			} // if
+				} // if
+			} // for loop
+			 
+			//encode user's post json
+			$jsoncode = json_encode($userposts, JSON_PRETTY_PRINT);
+			file_put_contents("$x.json", $jsoncode);
 			
+			$x ++; // update counter
+
+		} // while loop
+
+		// encode user profiles into json
+		$jsoncode = json_encode($userprofiles, JSON_PRETTY_PRINT);
+		file_put_contents($file, $jsoncode);
+		
+	} // like
+
+	function unlike($targetPost){
+	
+		$file = "userprofiles.json";
+		
+		//decode json string into php array
+		if(file_exists($file)){
+			$jsonstring = file_get_contents($file);
+
+			$userprofiles = json_decode($jsonstring, true);
+		} // if
+	
+		// check if targetpost is in array of liked posts
+		if(in_array($targetPost, $userprofiles[$_SESSION["userUid"]-1]["likedPosts"])){
+			unset($userprofiles[$_SESSION["userUid"]-1]["likedPosts"][$targetPost]);// update array of user's liked posts
+		}
+		
+		// update array of post's liked by
+		$x = 1; // counter
+
+		// runs through all user's post jsons to find target post
+		while(file_exists("$x.json")){
+
+			// decode user's post json
+			if(file_exists("$x.json")){
+				$jsonstring = file_get_contents("$x.json");
+				$userposts = json_decode($jsonstring, true);
+			} // if
+
+			for($x = 0; $x < sizeof($userposts); $x ++){
+			
+				if($userposts[$x]["uid"] == $targetPost){
+					if(in_array($_SESSION["userUid"], $userposts[$x]["likedBy"])){
+						unset($userposts[$x]["likedBy"][$_SESSION["userUid"]]);
+					} // if
+				} // if
+			} // for loop
 			 
 			//encode user's post json
 			$jsoncode = json_encode($userposts, JSON_PRETTY_PRINT);
