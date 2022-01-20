@@ -7,7 +7,11 @@ session_start();
  // save the json data as a PHP array
  $userarray = json_decode($jsonstring, true);
 
- $userstring = "";
+ $userstring = ""; // string containing the contents of user's file (not in php array format)
+
+ $likedposts = $userarray[$_SESSION["userUid"] - 1]["likedPosts"];
+
+ $postsrequested = true;
  
  // use GET to determine type of access
  if (isset($_GET["access"])){
@@ -28,6 +32,7 @@ session_start();
       }
 
       else if ($access == "allpfs") {
+         $postsrequested = false;
          foreach ($userarray as $user) {
             if ($user["uid"] == $_SESSION["userUid"]) {
                $user["current"] = true;
@@ -64,12 +69,23 @@ session_start();
 		
 	  }
 
-   /*foreach($phparray as $entry) {
-      if ($entry["connection"] == $access) {
-         $returnData[] = $entry;  
-      }      
-   } // foreach */
+     else if ($access == "liked") {
+        foreach ($userarray as $user) {
+           $userstring = file_get_contents($user["uid"] . ".json");
+           $userposts = json_decode($userstring, true);
+           if ($userposts != null) {
+              foreach ($userposts as $post) {
+                  foreach ($likedposts as $likedpost) {
+                     if ($post["uid"] == $likedpost) {
+                        $returnData[] = $post;
+                     }
+                  } // foreach
+              } // foreach
+           } // if
+        } // foreach
+     } // if
 
+   // if access == all
   } else {
       foreach ($userarray as $user) {
          $userstring = file_get_contents($user["uid"] . ".json");
@@ -81,6 +97,19 @@ session_start();
          }
       }
   }
+
+if ($postsrequested) {
+   foreach ($returnData as $post) {
+      foreach ($likedposts as $likedpost) {
+         if ($post["uid"] == $likedpost) {
+            $post["liked"] = true;
+         } else {
+            $post["liked"] = false;
+         }
+      }
+   }
+}
+
 
 // encode the php array to json 
  $jsoncode = json_encode($returnData, JSON_PRETTY_PRINT);

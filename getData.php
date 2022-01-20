@@ -15,6 +15,9 @@
 			foreach ($posts as $post) {
 				if ($post["uid"] == $uid) {
 					$post["author"] = $user["username"];
+					foreach ($post["likedBy"] as &$liker) {
+						$liker = $userprofiles[$liker - 1]["username"];
+					}
 					echo json_encode($post);
 				}
 			}

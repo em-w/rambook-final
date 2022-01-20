@@ -31,6 +31,10 @@ window.onload = function() {
 	showChosenGrade();
 };
 
+function hideProfileBar() {
+	document.getElementById("profileInfoBar").style.display = "none";
+}
+
 
 // initialize hidden elements of lightbox
 window.onload = function (){
@@ -111,19 +115,65 @@ function displayLightBox(alt, imageFile) {
   changeVisibility('positionBigImage'); 
 }
 
+function showProfileInfo(user) {
+	fetch("./readjson.php?access=allpfs")
+		.then(response => response.json())
+		.then(function(data) {
+			console.log(data);
+			let infoBar = document.getElementById("profileInfoBar");
+			let username = document.getElementById("pUsername");
+			let name = document.getElementById("pName");
+			let desc = document.getElementById("pDesc");
+			let connection = document.getElementById("pConnection");
+			let profileImage = document.getElementById("pImg");
+			
+			
+			let userInfo = data[user - 1];
+			console.log(userInfo);
+			
+			profileImage.src = "pfpthumbs/" + user + "." + userInfo.imagetype;
+			
+			infoBar.style.display = "block";
+			
+			
+			username.innerHTML = userInfo.username;
+			name.innerHTML = userInfo.name;
+			desc.innerHTML = userInfo.desc;
+			
+			let connectionString = userInfo.connection;
+			if (connectionString == "student") {
+				connectionString += ", in grade " + userInfo.grade;
+			}
+			
+			connection.innerHTML = connectionString;
+			
+		});
+	
+}
+
 // display user's name, grade, description, ect. under big image in lightbox
 function updatePostContents(data) {
 	console.log(data);
 	
-	
-	
-	var taglinks = "";
+	let taglinks = "";
+	let likedBy = "";
 	
 	for (tag in data.tags) {
-		taglinks += "<a href='javascript:searchProfiles(\"" + data.tags[tag] + "\"); changeVisibility(\"lightbox\"); changeVisibility(\"positionBigImage\");'> #" + data.tags[tag] + "</a>&nbsp;&nbsp;&nbsp;&nbsp;"; 
+		taglinks += "<a href='hideProfileBar(); javascript:searchProfiles(\"" + data.tags[tag] + "\"); changeVisibility(\"lightbox\"); changeVisibility(\"positionBigImage\");'> #" + data.tags[tag] + "</a>&nbsp;&nbsp;&nbsp;&nbsp;"; 
+	}
+
+	for (let i = 0; i < data.likedBy.length; i++) {
+		likedBy += data.likedBy[i];
+		if (i != (data.likedBy.length - 1)) {
+			likedBy += ", "
+		}
+		if (i % 8 == 0 && i != 0) {
+			console.log("i is " + i);
+			likedBy += "<br>";
+		}
 	}
 	
-	document.getElementById("text").innerHTML = "Posted by: " + data.author + "<br><br>" + data.desc + "<br><br>" + taglinks;
+	document.getElementById("text").innerHTML = "Posted by: " + data.author + "<br><br>" + data.desc + "<br><br>" + taglinks + "<br><br>Liked by:<br>" + likedBy;
 }
 
 
@@ -143,6 +193,7 @@ function sortByUID() {
 function loadImages(access, isPost){
 	console.log(isPost);
 	console.log(access);
+	
 	if (isPost) {
 		thumbFolder = "thumbnails/";
 		
@@ -161,6 +212,8 @@ function loadImages(access, isPost){
 		   let i;  // counter     
 		let j; // other counter
 		let main = document.getElementById("main");
+		let message = document.getElementById("message");
+		let messageString = "";
 		// remove all existing children of main
 		while (main.firstChild) {
 		main.removeChild(main.firstChild);
@@ -169,6 +222,26 @@ function loadImages(access, isPost){
 		// sort contents of data by uid
 		if (data != null) {
 		data.sort(sortByUID());
+
+		if (access == "all") {
+			messageString = "All posts:";
+		} else if (access == "self") {
+			messageString = "My posts:";
+		} else if (access == "following") {
+			messageString = "My feed:";
+		} else if (!isNaN(access)) {
+			messageString = "Posts:";
+		} else if (access == "allpfs") {
+			messageString = "All profiles:";
+		} else if (access == "liked") {
+			messageString = "My liked posts:";
+		}
+
+		if (data.length == 0) {
+			messageString += "<br> Looks like there's nothing here..."
+		}
+
+		message.innerHTML = messageString;
 
 
 
@@ -205,15 +278,23 @@ function loadImages(access, isPost){
 		
 					let likeform = document.createElement('form');
 					likeform.method = "post";
-					//likeform.setAttribute("onsubmit", "loadImages('allpfs', false)"); // doesnt workkk
 					let like = document.createElement('input');
 					like.type = "image";
-					like.src = "images/like.png";
-					like.alt = "like button";
-					like.className = "like";
 					let postToLike = document.createElement('input');
+
+					if (data[i].liked) {
+						like.src = "images/like.png";
+						like.alt = "like button";
+						postToLike.name = "postToLike";
+					} else {
+						like.src = "images/liked.png";
+						like.alt = "liked button";
+						postToLike.name = "postToUnlike";
+					}
+					
+					like.className = "like";
 					postToLike.type = "hidden";
-					postToLike.name = "postToLike";
+					
 					postToLike.value = data[i].uid;
 					card.appendChild(likeform).appendChild(like);
 					likeform.appendChild(postToLike);
@@ -230,7 +311,6 @@ function loadImages(access, isPost){
 					userToFollow.value = data[i].uid;
 					card.appendChild(followform).appendChild(follow);
 					followform.appendChild(userToFollow);
-					console.log(followingArray); // come back
 					if (followingArray.includes(data[i].uid)) {
 						follow.src = "images/unfollow.png";
 						follow.alt = "unfollow button";
@@ -246,13 +326,13 @@ function loadImages(access, isPost){
 					
 					let username = document.createElement('a');
 					let usernameText = document.createTextNode(data[i].username);
-					username.href = "javascript:loadImages(" + data[i].uid + ", true);";
+					username.href = "javascript:showProfileInfo(" + data[i].uid + "); loadImages(" + data[i].uid + ", true);"; 
 					username.appendChild(usernameText);
 					
 					card.appendChild(username);
 				}//if(!isPost)
 			}//for
-		}//if(data!=null)
+		}// if data != null
 	});//fetch then
 } // loadImages
 
@@ -302,6 +382,7 @@ function goToNextImage(direction) {
 // add a condition here, otherwise errors happen
 window.onload = function() {
 	loadImages("all", true);
+	//document.getElementById("profileInfoBar").style.display = "none"; //might cause problems
 }
 
 const searchbar = document.getElementById("searchbar");
@@ -336,7 +417,6 @@ function searchProfiles(term) {
     .then(function(data){
       console.log(data); 
 	  
-	  // everything beyond this point can be turned into a method probably
       let i;  // counter     
       let main = document.getElementById("main");
 	  let message = document.getElementById("message");
