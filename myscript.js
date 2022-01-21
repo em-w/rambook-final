@@ -42,13 +42,18 @@ window.onload = function (){
 	document.getElementById("lightbox").style.display = "none";
 };
 
-//onchange hash
+//On login/signup form submit hash the password
 function hash() {
 	document.getElementById("password").value = md5(document.getElementById("password").value);
 }
 
-//Onchange of upload, get DOMSTRING and set src of hidden img
-//num is the width and height of the preview
+/*
+*	Onchange of file input, get File obj of input, check if file type is supported, if yes
+*	sets the size of preview, and set file as src of hidden image. If file type isn't 
+*	supported show file type error message.
+*
+*	@param num stores the size of preview
+*/
 function setSrc (num) {
 	const imgFile = document.getElementById("image").files;
 	console.log(imgFile);
@@ -69,12 +74,12 @@ function setSrc (num) {
 // change the visibility of ID
 function changeVisibility(divID) {
   var element = document.getElementById(divID);
-   console.log(element.style.display);
+   console.log(element.style.visibility);
   if (element) {
-	if (element.style.display == "none")
-        element.style.display = "block";
+	if (element.style.visibility == "visible")
+        element.style.visibility = "hidden";
 	else 
-		element.style.display = "none";
+		element.style.visibility = "visible";
   }
 } // changeVisibility
 
@@ -230,6 +235,7 @@ function loadImages(access, isPost){
 		// remove all existing children of main
 		while (main.firstChild) {
 		main.removeChild(main.firstChild);
+		console.log("removed one");
 		}
 
 		// sort contents of data by uid
@@ -284,6 +290,7 @@ function loadImages(access, isPost){
 				console.log(data[i].uid + "." + data[i].imagetype);
 				img.src = thumbFolder + data[i].uid + "." + data[i].imagetype;
 				img.alt = data[i].desc;
+				console.log(data[i].desc + "      " + img.alt)
 				img.className = "thumb";
 				main.appendChild(card).appendChild(img);
 				if (isPost) {
@@ -471,26 +478,29 @@ function searchProfiles(term) {
 
 }
 
-//onload of image preview crop and resize it
-//This isn't optimized as the code still runs with the hidden horse img
+//	Onload of hidden image source, crop image set it as preview canvas source then resize
 if (previewImg) {
 		previewImg.onload = function () {
 		//Getting the area of the crop
-		let width = previewImg.width;
-		let height = previewImg.height;
-		let ratio = (previewImg.width / previewImg.height);
-		let startX = 0;
-		let startY = 0;
+		let width = previewImg.width; // width of image
+		let height = previewImg.height; // height of image
+		let ratio = (previewImg.width / previewImg.height);  // width height ratio of image
+		let startX = 0;	//starting X point for cropping image
+		let startY = 0;	//starting Y point for cropping image
 		
 		if (ratio >= 1) {
+			//if image is wider than tall then cut X
 			let thumbRatio = previewImg.height / size;
 			startX = (previewImg.width - (thumbRatio * size)) / 2;
 			width = (thumbRatio * size);
 		}else {
+			//if image is taller than wide cut Y
 			let thumbRatio = previewImg.width / size;
 			startY = (previewImg.height - (thumbRatio * size)) / 2;
 			height = (thumbRatio * size);
-		}
+		}//if else
+			
+		//crop image and sets it to preview canvas
 		document.getElementById("preview").getContext("2d").drawImage(previewImg, startX, startY, width, height, 10, 10, size, size);
-	}
-}
+	}// function
+}//if
