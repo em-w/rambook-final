@@ -11,10 +11,11 @@
     $searchterms = explode("%", $_GET["term"]);
    } else {
     $searchterms = ""; 
-   }
+   } // else
  
   $returnData = [];
   if ($searchterms != "") { 
+  // cycle through each user's individual file, compare the tags of the posts to search terms
     foreach($phparray as $entry) {
 		$userfile = $entry["uid"] . ".json";
 		$userstring = file_get_contents($userfile);
@@ -26,16 +27,15 @@
 					if (in_array($term, $post["tags"])) {
 						$returnData[] = $post;
 						break;
-					}
-				} 
+					} // if
+				} // foreach
 			
-			}
-		}	
+			} // foreach
+		} // if	
         
     } // if 
   } else {
-      // return an empty array?
-     $returnData = array();
+     $returnData = array(); // return empty array if nothing was searched 
   }
 
 // encode the php array to json 
