@@ -40,28 +40,9 @@
 	<p><strong id="message"></strong><p>
 </div>
 
-<?php
-	$file = "userprofiles.json";
-	$dir = "profileimages/";
-	$thumbdir = "thumbnails/";
-	
-	echo "<div id='main'>";
-	if (is_dir($thumbdir)) {
-		if ($dh = opendir($thumbdir)) {
-			while (($tempfile = readdir($dh)) !== false) {
-				if (!($tempfile === ".." || $tempfile === ".")) {
-					echo "<div class='card' onclick=\"displayLightBox('alt', '" . $tempfile . "')\"><img class ='thumb' src='" . $thumbdir . $tempfile . "'></div>";
-				}
-			}
-			closedir($dh);
-		}
-	}
-	echo "</div>";
+<div id="main"></div>
 
-	
-?>
-
-<div id="lightbox" class="hidden">	
+<div id="lightbox">	
 	
 </div>
 	
@@ -69,7 +50,7 @@
 	<img id="left" src="images/left.png" alt="left" onclick="goToNextImage(0)">
 	<img id="right" src="images/right.png" alt="right" onclick="goToNextImage(1)">
 	<img id="x" src="images/x.png" alt="close" onclick="displayLightBox('','')">
-	<div id="boundaryBigImage" class="hidden">
+	<div id="boundaryBigImage">
         <img id="bigImage" src="images/arabian.jpg" alt="">
 		<a id="download" href="images/arabian.jpg" download>Download image</a>
 		<p id="text"></p>
