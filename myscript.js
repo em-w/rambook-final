@@ -3,6 +3,8 @@ let size = 0; // size of preview
 let previewImg = document.getElementById("imgSrc"); // image preview obj
 let jsondata = []; // array of profiles currently being displayed on the screen
 let currentUid = 0; // uid of profile currently displayed in lightbox
+let gAccess = "";
+let gIsPost = "";
 
 function showGradeMenu() {
 	let x = document.getElementById("gradeMenu");
@@ -51,18 +53,9 @@ function hash() {
 //num is the width and height of the preview
 function setSrc (num) {
 	const imgFile = document.getElementById("image").files;
-	console.log(imgFile);
-	const tError = document.getElementById("imgTypeErr");
 	if (imgFile) {
-		console.log(imgFile[0].type);
-		if (imgFile[0].type == "image/png" || imgFile[0].type == "image/jpeg") {
-			tError.style.display = "none";
-			size = num;
-			previewImg.src = (URL.createObjectURL(imgFile[0]));
-		}else {
-			tError.style.display = "block";
-			document.getElementById("agreementDiv").style.display = "none";
-		}
+		size = num;
+		previewImg.src = (URL.createObjectURL(imgFile[0]));
 	}
 }
 
@@ -200,12 +193,13 @@ function sortByUID() {
 
 // load all posts or users's posts only
 function loadImages(access, isPost){
-	let main = document.getElementById("main")
-	
+	let main = document.getElementById("main");
 	if (main) {
 	
 	console.log(isPost);
 	console.log(access);
+	gAccess = access;
+	gIsPost = isPost;
 	
 	if (isPost) {
 		thumbFolder = "thumbnails/";
@@ -222,10 +216,11 @@ function loadImages(access, isPost){
 		let followingArray = [];
 
 		// everything beyond this point can be turned into a method probably
-		   let i;  // counter     
+		let i;  // counter     
 		let j; // other counter
 		let main = document.getElementById("main");
 		let message = document.getElementById("message");
+		message.innerHTML = "";
 		let messageString = "";
 		// remove all existing children of main
 		while (main.firstChild) {
@@ -248,9 +243,11 @@ function loadImages(access, isPost){
 			messageString = "All profiles:";
 		} else if (access == "liked") {
 			messageString = "My liked posts:";
+		} else if (access == "followingpfs") {
+			messageString = "Following";
 		}
 
-		if (data.length == 0) {
+		if (data.length == 0 || (!isPost) && data.length == 1) {
 			messageString += "<br> Looks like there's nothing here..."
 		}
 
@@ -283,7 +280,7 @@ function loadImages(access, isPost){
 				card.className = "card";
 				console.log(data[i].uid + "." + data[i].imagetype);
 				img.src = thumbFolder + data[i].uid + "." + data[i].imagetype;
-				img.alt = data[i].desc;
+				img.alt = data[i];
 				img.className = "thumb";
 				main.appendChild(card).appendChild(img);
 				if (isPost) {
@@ -291,6 +288,7 @@ function loadImages(access, isPost){
 		
 					let likeform = document.createElement('form');
 					likeform.method = "post";
+					likeform.setAttribute("onsubmit", "loadImages('" + access + "', '" + isPost + "')");
 					let like = document.createElement('input');
 					like.type = "image";
 					let postToLike = document.createElement('input');
@@ -312,10 +310,18 @@ function loadImages(access, isPost){
 					postToLike.value = data[i].uid;
 					card.appendChild(likeform).appendChild(like);
 					likeform.appendChild(postToLike);
+
+					let likeCount = document.createElement('p');
+					let count = Object.keys(data[i].likedBy).length;
+					let likeCountText = document.createTextNode(count + " like" + (count == 1 ? "" : "s"));
+					card.appendChild(likeCount.appendChild(likeCountText));
+					
+
+					
 				} else {
 					let followform = document.createElement('form');
 					followform.method = "post";
-					followform.setAttribute("onsubmit", "loadImages('allpfs', false)");
+					followform.setAttribute("onsubmit", "loadImages('" + access + "', '" + isPost + "')");
 					let follow = document.createElement('input');
 					follow.type = "image";
 					follow.className = "follow";
@@ -324,6 +330,7 @@ function loadImages(access, isPost){
 					userToFollow.value = data[i].uid;
 					card.appendChild(followform).appendChild(follow);
 					followform.appendChild(userToFollow);
+					
 					if (followingArray.includes(data[i].uid)) {
 						follow.src = "images/unfollow.png";
 						follow.alt = "unfollow button";
@@ -349,6 +356,10 @@ function loadImages(access, isPost){
 	});//fetch then
 	} // if main exists
 } // loadImages
+
+window.onload = function() {
+	loadImages("all", true);
+}
 
 // return the provided session variable FIX ME
 function getSessionVariable(variable) {
@@ -393,11 +404,6 @@ function goToNextImage(direction) {
 	}
 }
 
-// add a condition here, otherwise errors happen
-window.onload = function() {
-	loadImages("all", true);
-	//document.getElementById("profileInfoBar").style.display = "none"; //might cause problems
-}
 
 const searchbar = document.getElementById("searchbar");
 
@@ -472,25 +478,26 @@ function searchProfiles(term) {
 }
 
 //onload of image preview crop and resize it
-//This isn't optimized as the code still runs with the hidden horse img
-if (previewImg) {
-		previewImg.onload = function () {
-		//Getting the area of the crop
-		let width = previewImg.width;
-		let height = previewImg.height;
-		let ratio = (previewImg.width / previewImg.height);
-		let startX = 0;
-		let startY = 0;
-		
-		if (ratio >= 1) {
-			let thumbRatio = previewImg.height / size;
-			startX = (previewImg.width - (thumbRatio * size)) / 2;
-			width = (thumbRatio * size);
-		}else {
-			let thumbRatio = previewImg.width / size;
-			startY = (previewImg.height - (thumbRatio * size)) / 2;
-			height = (thumbRatio * size);
-		}
-		document.getElementById("preview").getContext("2d").drawImage(previewImg, startX, startY, width, height, 10, 10, size, size);
+previewImg.onload = function () {
+	console.log(size);
+	//Getting the area of the crop
+	let width = previewImg.width;
+	let height = previewImg.height;
+	let ratio = (previewImg.width / previewImg.height);
+	let startX = 0;
+	let startY = 0;
+	
+	if (ratio >= 1) {
+		let thumbRatio = previewImg.height / size;
+		startX = (previewImg.width - (thumbRatio * size)) / 2;
+		width = (thumbRatio * size);
+		console.log("x" + startX);
+	}else {
+		let thumbRatio = previewImg.width / size;
+		startY = (previewImg.height - (thumbRatio * size)) / 2;
+		height = (thumbRatio * size);
+		console.log("y" + startY);
 	}
+	document.getElementById("preview").getContext("2d").drawImage(previewImg, startX, startY, width, height, 10, 10, size, size);
+	console.log(previewImg + " " + startX + " " + startY + " " + width + " " + height  + " " + size);
 }

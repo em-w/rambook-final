@@ -1,28 +1,96 @@
 [
     {
         "username": "q",
+        "password": "7694f4a66316e53c8cdd9d9954bd611d",
         "name": "q",
         "agreement": "on",
         "connection": "student",
         "grade": "9",
         "desc": "q",
         "signup": "Submit!",
-        "password": "7694f4a66316e53c8cdd9d9954bd611d",
         "uid": "1",
         "imagetype": "png",
-        "following": []
+        "following": [],
+        "likedPosts": []
     },
     {
-        "username": "s",
-        "name": "s",
+        "username": "w",
+        "password": "f1290186a5d0b1ceab27f4e77c0c5d68",
+        "name": "w",
         "agreement": "on",
         "connection": "student",
         "grade": "9",
-        "desc": "sdfdf",
+        "desc": "w",
         "signup": "Submit!",
-        "password": "03c7c0ace395d80182db07ae2c30f034",
         "uid": "2",
         "imagetype": "png",
-        "following": []
+        "following": [],
+        "likedPosts": [
+            "1"
+        ]
+    },
+    {
+        "username": "emilyw",
+        "password": "64517d8435994992e682b3e4aa0a0661",
+        "name": "Emily W",
+        "agreement": "on",
+        "connection": "student",
+        "grade": "9",
+        "desc": "Hi! This is a description :)",
+        "signup": "Submit!",
+        "uid": "3",
+        "imagetype": "png",
+        "following": [],
+        "likedPosts": [
+            "1"
+        ]
+    },
+    {
+        "username": "h",
+        "password": "2510c39011c5be704182423e3a695e91",
+        "name": "h",
+        "agreement": "on",
+        "connection": "student",
+        "grade": "9",
+        "desc": "h",
+        "signup": "Submit!",
+        "uid": "4",
+        "imagetype": "png",
+        "following": [],
+        "likedPosts": []
+    },
+    {
+        "username": "em",
+        "password": "e1671797c52e15f763380b45e841ec32",
+        "name": "emily",
+        "agreement": "on",
+        "connection": "student",
+        "grade": "9",
+        "desc": "emily",
+        "signup": "Submit!",
+        "uid": "5",
+        "imagetype": "png",
+        "following": [
+            "1"
+        ],
+        "likedPosts": [
+            "1"
+        ]
+    },
+    {
+        "username": "r",
+        "password": "4b43b0aee35624cd95b910189b3dc231",
+        "name": "r",
+        "agreement": "on",
+        "connection": "student",
+        "grade": "9",
+        "desc": "r",
+        "signup": "Submit!",
+        "uid": "6",
+        "imagetype": "png",
+        "following": [
+            "1"
+        ],
+        "likedPosts": []
     }
 ]

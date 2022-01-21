@@ -9,9 +9,9 @@ session_start();
 
  $userstring = ""; // string containing the contents of user's file (not in php array format)
 
- $likedposts = $userarray[$_SESSION["userUid"] - 1]["likedPosts"];
-
- $postsrequested = true;
+$likedposts = $userarray[$_SESSION["userUid"] - 1]["likedPosts"];
+ 
+$postsrequested = true;
  
  // use GET to determine type of access
  if (isset($_GET["access"])){
@@ -25,7 +25,7 @@ session_start();
   if ($access != "all") { 
       if ($access == "self") {
          $userstring = file_get_contents($_SESSION["userUid"] . ".json");
-         $userposts = json_decode($userstring);
+         $userposts = json_decode($userstring, true);
          if ($userposts != null) {
             $returnData = $userposts;
          }
@@ -50,7 +50,7 @@ session_start();
                   $userstring = file_get_contents($userUid . ".json");
                   $userposts = json_decode($userstring, true);
                   if ($userposts != null) {
-                  foreach ($userposts as $post) {
+                     foreach ($userposts as $post) {
                      $returnData[] = $post;
                   } 
                }
@@ -83,7 +83,20 @@ session_start();
               } // foreach
            } // if
         } // foreach
-     } // if
+     } // else if
+
+     else if ($access == "followingpfs") {
+        $postsrequested = false;
+        $userarray[$_SESSION["userUid"] - 1]["current"] = true;
+        $returnData[] = $userarray[$_SESSION["userUid"] - 1];
+        foreach ($userarray as $user) {
+           foreach ($userarray[$_SESSION["userUid"] - 1]["following"] as $following) {
+              if ($user["uid"] == $following) {
+                 $returnData[] = $user;
+              }
+           }
+        }
+     }
 
    // if access == all
   } else {
@@ -98,17 +111,18 @@ session_start();
       }
   }
 
+
 if ($postsrequested) {
-   foreach ($returnData as $post) {
-      foreach ($likedposts as $likedpost) {
-         if ($post["uid"] == $likedpost) {
-            $post["liked"] = true;
-         } else {
-            $post["liked"] = false;
-         }
-      }
+   foreach ($returnData as &$post) {
+		if (in_array($_SESSION["userUid"], $post["likedBy"])) {
+			$post["liked"] = true;
+		}
+		else {
+			$post["liked"] = false;
+		}
    }
 }
+
 
 
 // encode the php array to json 

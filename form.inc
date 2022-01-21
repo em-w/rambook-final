@@ -6,10 +6,9 @@
 	<input type="file" id="image" name="image" class="button" onchange="setSrc(500); showAgreement();"> <span class="error"> * <?php echo $pfpErr; ?></span> <br>
 	
 	<div id="agreementDiv">
-		<img id="imgSrc" alt="Preview image source." src="images/arabian.jpg">
+		<img id="imgSrc">
 		<canvas id="preview" width="520" height="520"></canvas><br><br>
-	</div>
-	<p id="imgTypeErr">Sorry, only PNG, and JPG/JPEG image files are accepted.</p> <br>
+	</div> <br>
 	
 	<input type="checkbox" id="agreement" name="agreement" <?php if ($agreement != "") echo "checked"; ?>> 
 	<label for="agreement">I give RamBook non-exclusive, transferable, sub-licensable, royalty-free, worldwide license to use this photo.</label>

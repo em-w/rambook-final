@@ -1,8 +1,9 @@
 <div id="viewmenu">
 	<div onclick="hideProfileBar(); loadImages('all', true);" class="viewbutton">show all posts</div>
 	<div onclick="hideProfileBar(); loadImages('following', true);" class="viewbutton">my feed</div>
-	<div onclick="showProfileInfo(<?php echo $_SESSION["userUid"]?>); loadImages('self', true)" class="viewbutton">my posts</div>
+	<div onclick="showProfileInfo(<?php echo $_SESSION["userUid"]?>); loadImages('self', true)" class="viewbutton">my profile</div>
 	<div onclick="hideProfileBar(); loadImages('liked', true);" class="viewbutton">liked posts</div>
+	<div onclick="hideProfileBar(); loadImages('followingpfs', false);" class="viewbutton">following</div>
 	<div onclick="hideProfileBar(); loadImages('allpfs', false);" class="viewbutton">show all profiles</div>
 	
 </div>

@@ -238,6 +238,8 @@ $credentials = [
 			unfollow($_POST["userToUnfollow"]);
 		} else if (isset($_POST["postToLike"])){
 			like($_POST["postToLike"]);
+		} else if (isset($_POST["postToUnlike"])) {
+			unlike($_POST["postToUnlike"]);
 		}
 
 	} // if
@@ -373,9 +375,10 @@ $credentials = [
 			
 		} // if
 
-		include "logout.inc";
 
 	}
+	
+	include "logout.inc";
 	
 	include "footer.inc";
 
@@ -439,6 +442,7 @@ $credentials = [
 		$key = array_search($target, $userprofiles[$_SESSION["userUid"]-1]["following"]);
 
 		unset($userprofiles[$_SESSION["userUid"]-1]["following"][$key]);
+		$userprofiles[$_SESSION["userUid"]-1]["following"] = array_values($userprofiles[$_SESSION["userUid"]-1]["following"]);
 
 
 		//encode back into file
@@ -498,6 +502,59 @@ $credentials = [
 		file_put_contents($file, $jsoncode);
 		
 	} // like
+	
+	function unlike($targetPost){
+	
+		$file = "userprofiles.json";
+		
+		//decode json string into php array
+		if(file_exists($file)){
+			$jsonstring = file_get_contents($file);
+
+			$userprofiles = json_decode($jsonstring, true);
+		} // if
+	
+		// check if targetpost is in array of liked posts
+		if(($key = array_search($targetPost, $userprofiles[$_SESSION["userUid"] - 1]["likedPosts"])) !== false){
+			unset($userprofiles[$_SESSION["userUid"] - 1]["likedPosts"][$key]);// update array of user's liked posts
+		}
+
+		// runs through all user's post jsons to find target post
+		
+		for ($x = 1; $x <= count($userprofiles); $x++){
+
+			// decode user's post json
+			if(file_exists("$x.json")){
+				$jsonstring = file_get_contents("$x.json");
+				$userposts = json_decode($jsonstring, true);
+			} // if
+			
+			if ($userposts != null) {
+
+				for($y = 0; $y < sizeof($userposts); $y ++){
+				
+					if($userposts[$y]["uid"] == $targetPost){
+						if(($key = array_search($_SESSION["userUid"], $userposts[$y]["likedBy"])) !== false) {
+							unset($userposts[$y]["likedBy"][$key]);
+							$userposts[$y]["likedBy"] = array_values($userposts[$y]["likedBy"]);
+						} // if
+					} // if
+				} // for loop
+			} // if
+
+			 
+			//encode user's post json
+			$jsoncode = json_encode($userposts, JSON_PRETTY_PRINT);
+			file_put_contents("$x.json", $jsoncode);
+
+		} // for loop
+		
+
+		// encode user profiles into json
+		$jsoncode = json_encode($userprofiles, JSON_PRETTY_PRINT);
+		file_put_contents($file, $jsoncode);
+		
+	} // unlike
 
 	function upload_pfp($targetDir, $targetFile, $isUploaded) {
 		// if targetDir doesn't exist, create it
