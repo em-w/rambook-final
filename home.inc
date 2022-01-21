@@ -41,26 +41,7 @@
 	<p><strong id="message"></strong><p>
 </div>
 
-<?php
-	$file = "userprofiles.json";
-	$dir = "profileimages/";
-	$thumbdir = "thumbnails/";
-	
-	echo "<div id='main'>";
-	if (is_dir($thumbdir)) {
-		if ($dh = opendir($thumbdir)) {
-			while (($tempfile = readdir($dh)) !== false) {
-				if (!($tempfile === ".." || $tempfile === ".")) {
-					echo "<div class='card' onclick=\"displayLightBox('alt', '" . $tempfile . "')\"><img class ='thumb' src='" . $thumbdir . $tempfile . "'></div>";
-				}
-			}
-			closedir($dh);
-		}
-	}
-	echo "</div>";
-
-	
-?>
+<div id="main"></div>
 
 <div id="lightbox" class="hidden">	
 	

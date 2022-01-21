@@ -53,9 +53,20 @@ function hash() {
 //num is the width and height of the preview
 function setSrc (num) {
 	const imgFile = document.getElementById("image").files;
+	console.log(imgFile);
+	const tError = document.getElementById("imgTypeErr");
 	if (imgFile) {
-		size = num;
-		previewImg.src = (URL.createObjectURL(imgFile[0]));
+		console.log(imgFile[0].type);
+		if (imgFile[0].type == "image/png" || imgFile[0].type == "image/jpeg") {
+			if (tError != null) {
+				tError.style.display = "none";
+			}
+			size = num;
+			previewImg.src = (URL.createObjectURL(imgFile[0]));
+		}else {
+			tError.style.display = "block";
+			document.getElementById("agreementDiv").style.display = "none";
+		}
 	}
 }
 
@@ -280,7 +291,7 @@ function loadImages(access, isPost){
 				card.className = "card";
 				console.log(data[i].uid + "." + data[i].imagetype);
 				img.src = thumbFolder + data[i].uid + "." + data[i].imagetype;
-				img.alt = data[i];
+				img.alt = data[i].uid;
 				img.className = "thumb";
 				main.appendChild(card).appendChild(img);
 				if (isPost) {

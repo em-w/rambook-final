@@ -104,8 +104,8 @@ $credentials = [
 					$error = true;
 					
 				// check if file is a valid image type
-				} else if ($imageFileType !== "jpg" && $imageFileType !== "png" && $imageFileType !== "jpeg" && $imageFileType !== "gif") {
-					$pfpErr = "Sorry, only .jpg, .jpeg, .png, and .gif files are allowed.";
+				} else if ($imageFileType !== "jpg" && $imageFileType !== "png" && $imageFileType !== "jpeg") {
+					$pfpErr = "Sorry, only .jpg, .jpeg, and .png files are allowed.";
 					$error = true;
 					
 				}
@@ -224,8 +224,8 @@ $credentials = [
 					$error = true;
 					
 				// check if file is a valid image type
-				} else if ($imageFileType !== "jpg" && $imageFileType !== "png" && $imageFileType !== "jpeg" && $imageFileType !== "gif") {
-					$pfpErr = "Sorry, only .jpg, .jpeg, .png, and .gif files are allowed.";
+				} else if ($imageFileType !== "jpg" && $imageFileType !== "png" && $imageFileType !== "jpeg") {
+					$pfpErr = "Sorry, only .jpg, .jpeg, and .png files are allowed.";
 					$error = true;
 					
 				}
