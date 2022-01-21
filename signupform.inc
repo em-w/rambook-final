@@ -6,7 +6,7 @@
     <input type="text" id="username" name="username" value="<?php echo $username; ?>"> <span class="error"> * <?php echo $userErr; ?></span> <br><br>
 
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password"> <span class="error"> * <?php echo $pwdErr; ?></span> <br><br>
+    <input type="password" id="password" name="password""> <span class="error"> * <?php echo $pwdErr; ?></span> <br><br>
 
     <label for="name">Name:</label><br>
 	<input type="text" id="name" name="name" value="<?php echo $name; ?>"> <span class = "error"> * <?php echo $nameErr; ?></span><br><br>	
@@ -15,14 +15,12 @@
 	<input type="file" id="image" name="image" class="button" onchange="setSrc(200); showAgreement();"> <span class="error"> <?php echo $pfpErr; ?></span> <br>
 	
     <div id="agreementDiv">
-		<img id="imgSrc" alt="Preview image source." src="images/arabian.jpg">
+		<img id="imgSrc">
 		<canvas id="preview" width="220" height="220"></canvas><br><br>
 		<input type="checkbox" id="agreement" name="agreement" checked> 
 		<label for="agreement">I give RamBook non-exclusive, transferable, sub-licensable, royalty-free, worldwide license to use this photo.</label>
 		<span class = "error"> * <?php echo $agreeErr; ?> </span> <br><br>
-	</div>
-	
-	<p id="imgTypeErr">Sorry, only PNG, and JPG/JPEG image files are accepted.</p> <br>
+	</div> <br>
 	
     Connection to Mount Doug: <span class="error"> * <?php echo $connErr; ?></span> <br>
 	<div id="fullConnMenu">

@@ -7,10 +7,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
    
-    <title>rambook</title>
+    <title>Rambook</title>
     
     <!-- include an external style sheet -->
-    <link rel="stylesheet" href="style.css">  
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="icon" type="image/png" href="images/favicon.png">
     
   </head>
   
