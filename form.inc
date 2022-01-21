@@ -14,7 +14,7 @@
 	<label for="agreement">I give RamBook non-exclusive, transferable, sub-licensable, royalty-free, worldwide license to use this photo.</label>
 	<span class = "error"> * <?php echo $agreeErr; ?> </span> <br><br>
 	
-	<label for="desc">Description:</label> <span class="error"> * <?php echo $descErr; ?></span> <br>
+	<label for="desc">Description:</label><br>
 	<textarea id="desc" name="desc" rows="4" cols="50"><?php echo $desc; ?></textarea>
 	<br>
 	<br>

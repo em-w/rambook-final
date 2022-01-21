@@ -1,5 +1,4 @@
 <?php
-
 include "HZip.php";
 
 // create a zip file of the images folder

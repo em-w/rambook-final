@@ -25,15 +25,15 @@
     Connection to Mount Doug: <span class="error"> * <?php echo $connErr; ?></span> <br>
 	<div id="fullConnMenu">
 		<div id="connectionMenu" class="connMenuElement">
-			<input type="radio" id="student" name="connection" value="student" onclick="showGradeMenu()" 
+			<input type="radio" id="student" name="connection" value="Student" onclick="showGradeMenu()" 
 			<?php if ($connection == "student") echo "checked"; ?>>
 			<label for="student">Student</label> <br>
 			
-            <input type="radio" id="alumnus" name="connection" value="alumnus" onclick="hideGradeMenu()" 
+            <input type="radio" id="alumnus" name="connection" value="Alumnus" onclick="hideGradeMenu()" 
 			<?php if ($connection == "alumnus") echo "checked"; ?>>
 			<label for="alumnus">Alumnus</label> <br>
 			
-            <input type="radio" id="staff" name="connection" value="staff" onclick="hideGradeMenu()" 
+            <input type="radio" id="staff" name="connection" value="Staff" onclick="hideGradeMenu()" 
 			<?php if ($connection == "staff") echo "checked"; ?>>
 			<label for="staff">Staff</label> <br>
 		</div>
