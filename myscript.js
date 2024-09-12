@@ -81,12 +81,12 @@ function setSrc (num) {
 // change the visibility of ID
 function changeVisibility(divID) {
   	var element = document.getElementById(divID);
-   	console.log(element.style.visibility);
+   	console.log(element.style.display);
   	if (element) {
-		if (element.style.visibility == "visible")
-        element.style.visibility = "hidden"; //XXX
+		if (element.style.display = "none")
+        element.style.display = "block";
 	else 
-		element.style.visibility = "visible";
+		element.style.style.display = "none"";
   } // if
 } // changeVisibility
 
